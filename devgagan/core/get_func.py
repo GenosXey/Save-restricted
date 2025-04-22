@@ -43,7 +43,7 @@ def thumbnail(sender):
 DB_NAME = "smart_users"
 COLLECTION_NAME = "super_user"
 
-VIDEO_EXTENSIONS = ['mp4', 'mov', 'avi', 'mkv', 'flv', 'wmv', 'webm', 'mpg', 'mpeg', '3gp', 'ts', 'm4v', 'f4v', 'vob']
+VIDEO_EXTENSIONS = ['mp4', 'mov', 'avi', 'mkv', 'flv', 'wmv', 'webm', 'mpg', 'mpeg', '3gp', 'ts', 'm4v', 'f4v', 'vob', 'flv']
 DOCUMENT_EXTENSIONS = ['pdf', 'docs']
 
 mongo_app = pymongo.MongoClient(MONGODB_CONNECTION_STRING)
@@ -105,7 +105,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     reply_to_message_id=topic_id,
                     parse_mode=ParseMode.MARKDOWN,
                     progress=progress_bar,
-                    progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
+                    progress_args=("╭─────────────────────╮\n│      **__KINGCEY Le Roi__**\n├─────────────────────", edit, time.time())
                 )
                 await dm.copy(LOG_GROUP)
                 
@@ -117,7 +117,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     parse_mode=ParseMode.MARKDOWN,
                     progress=progress_bar,
                     reply_to_message_id=topic_id,
-                    progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
+                    progress_args=("╭─────────────────────╮\n│      **__KINGCEY Le Roi__**\n├─────────────────────", edit, time.time())
                 )
                 await dm.copy(LOG_GROUP)
             else:
@@ -129,7 +129,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     reply_to_message_id=topic_id,
                     progress=progress_bar,
                     parse_mode=ParseMode.MARKDOWN,
-                    progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
+                    progress_args=("╭─────────────────────╮\n│      **__KINGCEY Le Roi__**\n├─────────────────────", edit, time.time())
                 )
                 await asyncio.sleep(2)
                 await dm.copy(LOG_GROUP)
@@ -137,7 +137,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         # Telethon upload
         elif upload_method == "Telethon":
             await edit.delete()
-            progress_message = await gf.send_message(sender, "**__Uploading...__**")
+            progress_message = await gf.send_message(sender, "**__Attente d'envoie...__**")
             caption = await format_caption_to_html(caption)
             uploaded = await fast_upload(
                 gf, file,
@@ -176,7 +176,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             )
 
     except Exception as e:
-        await app.send_message(LOG_GROUP, f"**Upload Failed:** {str(e)}")
+        await app.send_message(LOG_GROUP, f"**Téléversement échoué:** {str(e)}")
         print(f"Error during media upload: {e}")
 
     finally:
@@ -208,14 +208,14 @@ async def get_msg(userbot, sender, edit_id, msg_link, i, message):
             if chat in saved_channel_ids:
                 await app.edit_message_text(
                     message.chat.id, edit_id,
-                    "Sorry! This channel is protected by **__Team SPY__**."
+                    "Désolé. ce canal est protegé par **__KINGCEY__**."
                 )
                 return
             
         elif '/s/' in msg_link: # fixed story typo
-            edit = await app.edit_message_text(sender, edit_id, "Story Link Dictected...")
+            edit = await app.edit_message_text(sender, edit_id, "LIEN histoire détecté...")
             if userbot is None:
-                await edit.edit("Login in bot save stories...")     
+                await edit.edit("connecté dans le stockage d'histoire du bot...")     
                 return
             parts = msg_link.split("/")
             chat = parts[3]
@@ -269,14 +269,14 @@ async def get_msg(userbot, sender, edit_id, msg_link, i, message):
         #     return
 
         file_name = await get_media_filename(msg)
-        edit = await app.edit_message_text(sender, edit_id, "**Downloading...**")
+        edit = await app.edit_message_text(sender, edit_id, "**TELECHARGEMENT...**")
 
         # Download media
         file = await userbot.download_media(
             msg,
             file_name=file_name,
             progress=progress_bar,
-            progress_args=("╭─────────────────────╮\n│      **__Downloading__...**\n├─────────────────────", edit, time.time())
+            progress_args=("╭─────────────────────╮\n│      **__TELECHARGEMENT__...**\n├─────────────────────", edit, time.time())
         )
         
         caption = await get_final_caption(msg, sender)
@@ -444,7 +444,7 @@ async def copy_message_with_chat_id(app, userbot, sender, chat_id, message_id, e
 
         # Fallback if result is None
         if result is None:
-            await edit.edit("Trying if it is a group...")
+            await edit.edit("TELECHARGEMENT si c'est un groupe...")
             try:
                 await userbot.join_chat(chat_id)
             except Exception as e:
@@ -464,7 +464,7 @@ async def copy_message_with_chat_id(app, userbot, sender, chat_id, message_id, e
             file = await userbot.download_media(
                 msg,
                 progress=progress_bar,
-                progress_args=("╭─────────────────────╮\n│      **__Downloading__...**\n├─────────────────────", edit, time.time())
+                progress_args=("╭─────────────────────╮\n│      **__TELECHARGEMENT__...**\n├─────────────────────", edit, time.time())
             )
             file = await rename_file(file, sender)
 
@@ -488,7 +488,7 @@ async def copy_message_with_chat_id(app, userbot, sender, chat_id, message_id, e
             elif msg.sticker:
                 result = await app.send_sticker(target_chat_id, msg.sticker.file_id, reply_to_message_id=topic_id)
             else:
-                await edit.edit("Unsupported media type.")
+                await edit.edit("edia non supporté par Tg .")
 
     except Exception as e:
         print(f"Error : {e}")
@@ -618,7 +618,7 @@ async def send_settings_message(chat_id, user_id):
         [Button.inline("Set Thumbnail", b'setthumb'), Button.inline("Remove Thumbnail", b'remthumb')],
         [Button.inline("PDF Wtmrk", b'pdfwt'), Button.inline("Video Wtmrk", b'watermark')],
         [Button.inline("Upload Method", b'uploadmethod')],  # Include the dynamic Fast DL button
-        [Button.url("Report Errors", "https://t.me/team_spy_pro")]
+        [Button.url("Report Errors", "https://t.me/BotZFLIXSupport")]
     ]
 
     await gf.send_file(
@@ -636,19 +636,19 @@ async def callback_query_handler(event):
     user_id = event.sender_id
     
     if event.data == b'setchat':
-        await event.respond("Send me the ID of that chat:")
+        await event.respond("Envoie moi l'ID du groupe:")
         sessions[user_id] = 'setchat'
 
     elif event.data == b'setrename':
-        await event.respond("Send me the rename tag:")
+        await event.respond("Envoie moi la quote de renomage:")
         sessions[user_id] = 'setrename'
     
     elif event.data == b'setcaption':
-        await event.respond("Send me the caption:")
+        await event.respond("envoie moi la légende:")
         sessions[user_id] = 'setcaption'
 
     elif event.data == b'setreplacement':
-        await event.respond("Send me the replacement words in the format: 'WORD(s)' 'REPLACEWORD'")
+        await event.respond("Envoie moi le mote de remplacement EXEMPLE: 'WORD(s)' 'REPLACEWORD'")
         sessions[user_id] = 'setreplacement'
 
     elif event.data == b'addsession':
@@ -656,20 +656,20 @@ async def callback_query_handler(event):
         sessions[user_id] = 'addsession' # (If you want to enable session based login just uncomment this and modify response message accordingly)
 
     elif event.data == b'delete':
-        await event.respond("Send words seperated by space to delete them from caption/filename ...")
+        await event.respond("Envoyez des mots séparés par des espaces pour les supprimer de la caption/filname ...")
         sessions[user_id] = 'deleteword'
         
     elif event.data == b'logout':
         await odb.remove_session(user_id)
         user_data = await odb.get_data(user_id)
         if user_data and user_data.get("session") is None:
-            await event.respond("Logged out and deleted session successfully.")
+            await event.respond("Déconnexion et suppression de la session réussie.")
         else:
-            await event.respond("You are not logged in.")
+            await event.respond("Vous n'êtes pas connecté.")
         
     elif event.data == b'setthumb':
         pending_photos[user_id] = True
-        await event.respond('Please send the photo you want to set as the thumbnail.')
+        await event.respond('Veuillez envoyer la photo que vous souhaitez définir comme miniature.')
     
     elif event.data == b'pdfwt':
         await event.respond("This feature is not available yet in public repo...")
@@ -687,7 +687,7 @@ async def callback_query_handler(event):
             [Button.inline(f"Pyrogram v2{pyrogram_check}", b'pyrogram')],
             [Button.inline(f"SpyLib v1 ⚡{telethon_check}", b'telethon')]
         ]
-        await event.edit("Choose your preferred upload method:\n\n__**Note:** **SpyLib ⚡**, built on Telethon(base), by Team SPY still in beta.__", buttons=buttons)
+        await event.edit("Choisissez votre méthode de téléchargement préférée :\n\n__**Remarque : **SpyLib ⚡️, construit sur Telethon(base), par l'équipe ZFlix encore en version bêta.__", buttons=buttons)
 
     elif event.data == b'pyrogram':
         save_user_upload_method(user_id, "Pyrogram")
@@ -733,9 +733,9 @@ async def callback_query_handler(event):
     elif event.data == b'remthumb':
         try:
             os.remove(f'{user_id}.jpg')
-            await event.respond('Thumbnail removed successfully!')
+            await event.respond('Miniature supprimée avec succès!')
         except FileNotFoundError:
-            await event.respond("No thumbnail found to remove.")
+            await event.respond("Aucune miniature trouvée à supprimer.")
     
 
 @gf.on(events.NewMessage(func=lambda e: e.sender_id in pending_photos))
@@ -747,10 +747,10 @@ async def save_thumbnail(event):
         if os.path.exists(f'{user_id}.jpg'):
             os.remove(f'{user_id}.jpg')
         os.rename(temp_path, f'./{user_id}.jpg')
-        await event.respond('Thumbnail saved successfully!')
+        await event.respond('Miniature enregistrée avec succès!')
 
     else:
-        await event.respond('Please send a photo... Retry')
+        await event.respond('Veuillez envoyer une photo... Réessayez')
 
     # Remove user from pending photos dictionary in both cases
     pending_photos.pop(user_id, None)
@@ -795,7 +795,7 @@ async def handle_user_input(event):
                 word, replace_word = match.groups()
                 delete_words = load_delete_words(user_id)
                 if word in delete_words:
-                    await event.respond(f"The word '{word}' is in the delete set and cannot be replaced.")
+                    await event.respond(f"Le mot '{word}' est dans l'ensemble de suppression et ne peut pas être remplacé.")
                 else:
                     replacements = load_replacement_words(user_id)
                     replacements[word] = replace_word
@@ -821,13 +821,13 @@ async def handle_user_input(event):
 @gf.on(events.NewMessage(incoming=True, pattern='/lock'))
 async def lock_command_handler(event):
     if event.sender_id not in OWNER_ID:
-        return await event.respond("You are not authorized to use this command.")
+        return await event.respond("Vous n'êtes pas autorisé à utiliser cette commande.")
     
     # Extract the channel ID from the command
     try:
         channel_id = int(event.text.split(' ')[1])
     except (ValueError, IndexError):
-        return await event.respond("Invalid /lock command. Use /lock CHANNEL_ID.")
+        return await event.respond("Commande /lock invalide. Utilisez /lock CHANNEL_ID.")
     
     # Save the channel ID to the MongoDB database
     try:
@@ -898,7 +898,7 @@ async def handle_large_file(file, sender, edit, caption):
         if freecheck == 1:
             reply_markup = InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("💎 Get Premium to Forward", url="https://t.me/kingofpatal")]
+                    [InlineKeyboardButton("💎 Obtenir le plan premium du bot", url="https://t.me/Kingcey")]
                 ]
             )
             await app.copy_message(
@@ -1031,7 +1031,7 @@ def progress_callback(done, total, user_id):
         f"│ **__Speed:__** {speed_mbps:.2f} Mbps\n"
         f"│ **__ETA:__** {remaining_time_min:.2f} min\n"
         f"╰──────────────────╯\n\n"
-        f"**__Powered by Team SPY__**"
+        f"**__Powered by BotZFlix__**"
     )
     
     # Update tracking variables for the user
@@ -1094,7 +1094,7 @@ def dl_progress_callback(done, total, user_id):
         f"│ **__Speed:__** {speed_mbps:.2f} Mbps\n"
         f"│ **__ETA:__** {remaining_time_min:.2f} min\n"
         f"╰──────────────────╯\n\n"
-        f"**__Powered by Team SPY__**"
+        f"**__Powered by BotZFlix__**"
     )
     
     # Update tracking variables for the user
