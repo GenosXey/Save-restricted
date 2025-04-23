@@ -64,9 +64,9 @@ async def clear_db(client, message):
         pass
 
     if files_deleted:
-        await message.reply("✅ Your session data and files have been cleared from memory and disk.")
+        await message.reply("✅ Vos données de session et fichiers ont été effacés de la mémoire et du disque.")
     else:
-        await message.reply("✅ Logged out with flag -m")
+        await message.reply("✅ Désinscription avec un drapeau. -m")
         
     
 @app.on_message(filters.command("login"))
@@ -81,27 +81,27 @@ async def generate_session(_, message):
         
     user_id = message.chat.id   
     
-    number = await _.ask(user_id, 'Please enter your phone number along with the country code. \nExample: +19876543210', filters=filters.text)   
+    number = await _.ask(user_id, 'Veuillez entrer votre numéro de téléphone accompagné de l/indicatif du pays. Exemple : +221462785202', filters=filters.text)   
     phone_number = number.text
     try:
-        await message.reply("📲 Sending OTP...")
+        await message.reply("📲 Envoi du code OTP...")
         client = Client(f"session_{user_id}", api_id, api_hash)
         
         await client.connect()
     except Exception as e:
-        await message.reply(f"❌ Failed to send OTP {e}. Please wait and try again later.")
+        await message.reply(f"❌ Échec de l'envoi du code OTP. {e}. Veuillez patienter et réessayer plus tard")
     try:
         code = await client.send_code(phone_number)
     except ApiIdInvalid:
-        await message.reply('❌ Invalid combination of API ID and API HASH. Please restart the session.')
+        await message.reply("❌ Combinaison invalide de l'API ID et de l'API HASH. Veuillez redémarrer la session.")
         return
     except PhoneNumberInvalid:
-        await message.reply('❌ Invalid phone number. Please restart the session.')
+        await message.reply('❌ Numéro de téléphone invalide. Veuillez redémarrer la session.')
         return
     try:
-        otp_code = await _.ask(user_id, "Please check for an OTP in your official Telegram account. Once received, enter the OTP in the following format: \nIf the OTP is `12345`, please enter it as `1 2 3 4 5`.", filters=filters.text, timeout=600)
+        otp_code = await _.ask(user_id, "Veuillez vérifier un code OTP dans votre compte Telegram officiel. Une fois reçu, entrez le code OTP dans le format suivant :  \nSi le code OTP est `12345`, veuillez l'entrer sous la forme `1 2 3 4 5`.", filters=filters.text, timeout=600)
     except TimeoutError:
-        await message.reply('⏰ Time limit of 10 minutes exceeded. Please restart the session.')
+        await message.reply('⏰ La limite de temps de 10 minutes a été dépassée. Veuillez redémarrer la session')
         return
     phone_code = otp_code.text.replace(" ", "")
     try:
@@ -115,17 +115,17 @@ async def generate_session(_, message):
         return
     except SessionPasswordNeeded:
         try:
-            two_step_msg = await _.ask(user_id, 'Your account has two-step verification enabled. Please enter your password.', filters=filters.text, timeout=300)
+            two_step_msg = await _.ask(user_id, 'Votre compte a la vérification en deux étapes activée. Veuillez entrer votre mot de passe..', filters=filters.text, timeout=300)
         except TimeoutError:
-            await message.reply('⏰ Time limit of 5 minutes exceeded. Please restart the session.')
+            await message.reply('⏰ La limite de temps de 5 minutes a été dépassée. Veuillez redémarrer la session..')
             return
         try:
             password = two_step_msg.text
             await client.check_password(password=password)
         except PasswordHashInvalid:
-            await two_step_msg.reply('❌ Invalid password. Please restart the session.')
+            await two_step_msg.reply('❌ Mot de passe invalide. Veuillez redémarrer la session.')
             return
     string_session = await client.export_session_string()
     await db.set_session(user_id, string_session)
     await client.disconnect()
-    await otp_code.reply("✅ Login successful!")
+    await otp_code.reply("✅ Connexion réussie !")
