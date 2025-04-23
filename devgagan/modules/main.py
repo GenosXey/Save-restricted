@@ -60,7 +60,7 @@ async def check_interval(user_id, freecheck):
         cooldown_end = interval_set[user_id]
         if now < cooldown_end:
             remaining_time = (cooldown_end - now).seconds
-            return False, f"Please wait {remaining_time} seconds(s) before sending another link. Alternatively, purchase premium for instant access.\n\n> Hey 👋 You can use /token to use the bot free for 3 hours without any time limit."
+            return False, f"Veuillez patienter {remaining_time} seconde(s) avant d'envoyer un autre lien. Alternativement, achetez un premium pour un accès instantané.\n\n> Hé 👋 Vous pouvez utiliser /token pour utiliser le bot gratuitement pendant 3 heures sans aucune limite de temps."
         else:
             del interval_set[user_id]  # Cooldown expired, remove user from interval set
 
@@ -86,13 +86,13 @@ async def single_link(_, message):
     # Check if user is already in a loop
     if users_loop.get(user_id, False):
         await message.reply(
-            "You already have an ongoing process. Please wait for it to finish or cancel it with /cancel."
+            "Vous avez déjà un processus en cours. Veuillez attendre qu'il se termine ou annulez-le avec /cancel."
         )
         return
 
     # Check freemium limits
     if await chk_user(message, user_id) == 1 and FREEMIUM_LIMIT == 0 and user_id not in OWNER_ID and not await is_user_verified(user_id):
-        await message.reply("Freemium service is currently not available. Upgrade to premium for access.")
+        await message.reply("Le service freemium n'est actuellement pas disponible. Passez à premium pour y accéder.")
         return
 
     # Check cooldown
@@ -115,9 +115,9 @@ async def single_link(_, message):
             await process_special_links(userbot, user_id, msg, link)
             
     except FloodWait as fw:
-        await msg.edit_text(f'Try again after {fw.x} seconds due to floodwait from Telegram.')
+        await msg.edit_text(f'Réésayer après {fw.x} Seconds à cause du Floodwait telegram')
     except Exception as e:
-        await msg.edit_text(f"Link: `{link}`\n\n**Error:** {str(e)}")
+        await msg.edit_text(f"Lien: `{link}`\n\n**Error:** {str(e)}")
     finally:
         users_loop[user_id] = False
         try:
@@ -180,33 +180,33 @@ async def batch_link(_, message):
     if users_loop.get(user_id, False):
         await app.send_message(
             message.chat.id,
-            "You already have a batch process running. Please wait for it to complete."
+            "Vous avez déjà un processus par lot en cours. Veuillez attendre qu'il se termine."
         )
         return
 
     freecheck = await chk_user(message, user_id)
     if freecheck == 1 and FREEMIUM_LIMIT == 0 and user_id not in OWNER_ID and not await is_user_verified(user_id):
-        await message.reply("Freemium service is currently not available. Upgrade to premium for access.")
+        await message.reply("Le service freemium n'est actuellement pas disponible. Passez à premium pour y accéder.")
         return
 
     max_batch_size = FREEMIUM_LIMIT if freecheck == 1 else PREMIUM_LIMIT
 
     # Start link input
     for attempt in range(3):
-        start = await app.ask(message.chat.id, "Please send the start link.\n\n> Maximum tries 3")
+        start = await app.ask(message.chat.id, "Veuillez envoyer le lien de démarrage.\n\n> Essais maximum 3")
         start_id = start.text.strip()
         s = start_id.split("/")[-1]
         if s.isdigit():
             cs = int(s)
             break
-        await app.send_message(message.chat.id, "Invalid link. Please send again ...")
+        await app.send_message(message.chat.id, "Lien invalide. Veuillez renvoyer. ...")
     else:
-        await app.send_message(message.chat.id, "Maximum attempts exceeded. Try later.")
+        await app.send_message(message.chat.id, "Nombre maximum de tentatives dépassé. Essayez plus tard.")
         return
 
     # Number of messages input
     for attempt in range(3):
-        num_messages = await app.ask(message.chat.id, f"How many messages do you want to process?\n> Max limit {max_batch_size}")
+        num_messages = await app.ask(message.chat.id, f"Combien de messages souhaitez-vous traiter ?\n> Limite maximale {max_batch_size}")
         try:
             cl = int(num_messages.text.strip())
             if 1 <= cl <= max_batch_size:
@@ -215,10 +215,10 @@ async def batch_link(_, message):
         except ValueError:
             await app.send_message(
                 message.chat.id, 
-                f"Invalid number. Please enter a number between 1 and {max_batch_size}."
+                f"Nombre invalide. Veuillez entrer un nombre entre 1 et {max_batch_size}."
             )
     else:
-        await app.send_message(message.chat.id, "Maximum attempts exceeded. Try later.")
+        await app.send_message(message.chat.id, "Nombre maximum de tentatives dépassé. Essayez plus tard")
         return
 
     # Validate and interval check
@@ -227,11 +227,11 @@ async def batch_link(_, message):
         await message.reply(response_message)
         return
         
-    join_button = InlineKeyboardButton("Join Channel", url="https://t.me/team_spy_pro")
+    join_button = InlineKeyboardButton("Rejoins mon canal d'animes", url="https://t.me/KGCAnime")
     keyboard = InlineKeyboardMarkup([[join_button]])
     pin_msg = await app.send_message(
         user_id,
-        f"Batch process started ⚡\nProcessing: 0/{cl}\n\n**Powered by Team SPY**",
+        f"Processus par lot démarré ⚡\nProcessing: 0/{cl}\n\n**Powered by BotZFlix**",
         reply_markup=keyboard
     )
     await pin_msg.pin(both_sides=True)
